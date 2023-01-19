@@ -1,0 +1,234 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+struct Employee {
+    char name[30];
+    int id;
+    float salary;
+    struct Employee *next;
+};
+
+
+ struct Employee* initEmployeeList();
+ void addEmployee(struct Employee *head, struct Employee employee);
+ void printEmployees(struct Employee *head);
+ bool removeEmployee(struct Employee *head, struct Employee employee);
+ bool addEmployeeAfter(struct Employee *head, struct Employee existingEmployee, struct Employee employee);
+ bool removeEmployeeAtIndex(struct Employee *head, int index);
+ void addEmployeeAtIndex(struct Employee *head, int index, struct Employee employee);
+ void sortEmployeesBySalary(struct Employee *head);
+ 
+int main()
+{
+   struct Employee *head = initEmployeeList();
+   struct Employee temp, temp2;
+   int pos, ch;
+   char g;
+do {
+    printf("\n Menu");
+    printf("\n 1.Add employee \n 2.Print list \n 3.Insert employee on index \n 4.Insert employe after other employee in list \n 5.Remove employe from index \n 6.Remove employe \n 7.Sort employees ascedning by salary \n 8.Exit \n");
+    printf("\n Pick an option: ");
+    scanf("%d", & ch);
+
+    switch (ch) {
+    case 1:
+      fflush(stdin);
+      printf("\n Insert employees ID: ");
+      scanf("%d", &temp.id);
+      printf("\n Insert employees name: ");
+      scanf(" %[^\n]", temp.name);
+      printf("\n Insert employees salary: ");
+      scanf("%f", & temp.salary);
+      addEmployee( head, temp);
+      break;
+
+    case 2:
+      printEmployees(head);
+      break;
+
+    case 3:
+      fflush(stdin);
+      printf("\n Insert employees ID: ");
+      scanf("%d", & temp.id);
+      printf("\n Insert employees name: ");
+      scanf(" %[^\n]", temp.name);
+      printf("\n Insert employees salary: ");
+      scanf("%f", & temp.salary);
+      printf("\n Insert index on which you want to place new employee: ");
+      scanf("%d", & pos);
+      addEmployeeAtIndex( head, pos, temp);
+      break;
+
+    case 4:
+      fflush(stdin);
+      printf("\n Insert new employees ID: ");
+      scanf("%d", & temp.id);
+      printf("\n Insert new employees name: ");
+      scanf(" %[^\n]", temp.name);
+      printf("\n Insert new employees salary: ");
+      scanf("%f", & temp.salary);
+      printf("\n Insert employee after which you want to place new employee: ");
+      fflush(stdin);
+      printf("\n Insert existing employees ID: ");
+      scanf("%d", & temp2.id);
+      printf("\n Insert existing employees name: ");
+      scanf(" %[^\n]", temp2.name);
+      printf("\n Insert existing employees salary: ");
+      scanf("%f", & temp2.salary);
+
+      addEmployeeAfter( head, temp2, temp);
+      break;
+
+    case 5:
+      printf("\n Insert index from which you want to delete employee: ");
+      scanf("%d", & pos);
+      removeEmployeeAtIndex( head, pos);
+      break;
+
+    case 6:
+      printf("\n Insert employee which you want to delete: ");
+      fflush(stdin);
+      printf("\n Insert employees ID: ");
+      scanf("%d", & temp.id);
+      printf("\n Insert employees name: ");
+      scanf(" %[^\n]", temp.name);
+      printf("\n Insert employees salary: ");
+      scanf("%f", & temp.salary);
+      removeEmployee( head, temp);
+      break;
+
+    case 7:
+      sortEmployeesBySalary( head);
+      break;
+
+    case 8:
+      exit(1);
+      break;
+      
+
+    default:
+      printf("\n\n Wrong input");
+      break;
+    }
+    printf("\n Do you want to continiue? y or n\n");
+    scanf("\n%c", & g);
+  }while (g == 'y' || g == 'Y');
+  getch();
+   
+   return 0;
+}
+
+struct Employee* initEmployeeList() {
+    struct Employee *head = (struct Employee*) malloc(sizeof(struct Employee));
+    head->next = NULL;
+    return head;
+}
+
+void addEmployee(struct Employee *head, struct Employee employee) {
+    struct Employee *newNode = (struct Employee*) malloc(sizeof(struct Employee));
+    newNode->id = employee.id;
+    newNode->salary = employee.salary;
+    strcpy(newNode->name, employee.name);
+    newNode->next = head->next;
+    head->next = newNode;
+}
+
+void printEmployees(struct Employee *head) {
+    struct Employee *current = head->next;
+    if(current==NULL){
+        printf("List is empty");
+    }
+    while (current != NULL) {
+        printf("Name: %s, ID: %d, Salary: %.2f\n", current->name, current->id, current->salary);
+        current = current->next;
+    }
+}
+
+bool removeEmployee(struct Employee *head, struct Employee employee) {
+    struct Employee *current = head;
+    while (current->next != NULL) {
+        if (current->next->id == employee.id &&
+            current->next->salary == employee.salary &&
+            strcmp(current->next->name, employee.name) == 0) {
+            struct Employee *temp = current->next;
+            current->next = current->next->next;
+            free(temp);
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+bool removeEmployeeAtIndex(struct Employee *head, int index) {
+    struct Employee *current = head;
+    for (int i = 0; i < index; i++) {
+        if (current->next == NULL) {
+            return false;
+        }
+        current = current->next;
+    }
+    struct Employee *temp = current->next;
+    current->next = current->next->next;
+    free(temp);
+    return true;
+}
+
+
+bool addEmployeeAfter(struct Employee *head, struct Employee existingEmployee, struct Employee employee) {
+    struct Employee *current = head;
+    while (current->next != NULL) {
+        if (current->next->id == existingEmployee.id &&
+            current->next->salary == existingEmployee.salary &&
+            strcmp(current->next->name, existingEmployee.name) == 0) {
+            struct Employee *newNode = (struct Employee*) malloc(sizeof(struct Employee));
+            newNode->id = employee.id;
+            newNode->salary = employee.salary;
+            strcpy(newNode->name, employee.name);
+            newNode->next = current->next->next;
+            current->next->next = newNode;
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+void addEmployeeAtIndex(struct Employee *head, int index, struct Employee employee) {
+    struct Employee *current = head;
+    for (int i = 0; i < index; i++) {
+        if (current->next == NULL) {
+            return;
+        }
+        current = current->next;
+    }
+    struct Employee *newNode = (struct Employee*) malloc(sizeof(struct Employee));
+    newNode->id = employee.id;
+    newNode->salary = employee.salary;
+    strcpy(newNode->name, employee.name);
+    newNode->next = current->next;
+    current->next = newNode;
+}
+
+void sortEmployeesBySalary(struct Employee *head) {
+    for (struct Employee *i = head->next; i->next != NULL; i = i->next) {
+        for (struct Employee *j = i->next; j != NULL; j = j->next) {
+            if (i->salary > j->salary) {
+                struct Employee temp = *i;
+                *i = *j;
+                *j = temp;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
