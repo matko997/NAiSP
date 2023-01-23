@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+
+struct TreeNode {
+    int data;
+    struct TreeNode *firstChild;
+    struct TreeNode *nextSibling;
+};
+
+struct Tree {
+    struct TreeNode *root;
+};
+
+struct TreeNode *createNewNode(int data) {
+    struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    if (newNode) {
+        newNode->data = data;
+        newNode->firstChild = NULL;
+        newNode->nextSibling = NULL;
+    }
+    return newNode;
+}
+
+struct TreeNode *addSibling(struct TreeNode *node, int data) {
+    if (!node) {
+        return NULL;
+    }
+    while (node->nextSibling) {
+        node = node->nextSibling;
+    }
+    return (node->nextSibling = createNewNode(data));
+}
+
+struct TreeNode *addChild(struct TreeNode *node, int data) {
+    if (!node) {
+        return NULL;
+    }
+    if (node->firstChild) {
+        return addSibling(node->firstChild, data);
+    } else {
+        return (node->firstChild = createNewNode(data));
+    }
+}
+
+void printTree(struct TreeNode *node) {
+    if (!node) {
+        return;
+    }
+    printf("%d\n", node->data);
+    printTree(node->firstChild);
+    printTree(node->nextSibling);
+}
+
+void printTreeGraphically(struct TreeNode *node, int level) {
+    if (!node) {
+        return;
+    }
+    for (int i = 0; i < level; i++) {
+        printf("    ");
+    }
+    printf("%d\n", node->data);
+    struct TreeNode *currentChild = node->firstChild;
+    while (currentChild) {
+        printTreeGraphically(currentChild, level + 1);
+        currentChild = currentChild->nextSibling;
+    }
+}
+
+
+int main() {
+    struct Tree tree;
+    tree.root = createNewNode(20); // create the root node with data 20
+    addChild(tree.root, 5); // add a child node with data 5 to the root
+    addChild(tree.root, 13); // add a child node with data 13 to the root
+    addChild(tree.root, 17); // add a child node with data 17 to the root
+    addChild(tree.root->firstChild, 3); // add a child node with data 3 to the first child of the root
+      
+    addChild(tree.root->firstChild, 17); // add a child node with data 17 to the first child of the root
+      /*
+    addChild(tree.root->firstChild->firstChild, 2); // add a child node with data 2 to the first child of the first child of the root
+    addChild(tree.root->firstChild->nextSibling, 27); // add a child node with data 27 to the second child of the first child of the root
+        */
+    printTree(tree.root); // print the entire tree
+
+    printTreeGraphically(tree.root, 0);
+    return 0;
+}
+
