@@ -52,20 +52,6 @@ void printTree(struct TreeNode *node) {
     printTree(node->nextSibling);
 }
 
-void printTreeGraphically(struct TreeNode *node, int level) {
-    if (!node) {
-        return;
-    }
-    for (int i = 0; i < level; i++) {
-        printf("    ");
-    }
-    printf("%d\n", node->data);
-    struct TreeNode *currentChild = node->firstChild;
-    while (currentChild) {
-        printTreeGraphically(currentChild, level + 1);
-        currentChild = currentChild->nextSibling;
-    }
-}
 
 
 int main() {
@@ -83,7 +69,6 @@ int main() {
         */
     printTree(tree.root); // print the entire tree
 
-    printTreeGraphically(tree.root, 0);
     return 0;
 }
 
